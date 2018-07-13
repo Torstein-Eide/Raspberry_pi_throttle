@@ -65,8 +65,8 @@ echo -n "   Now: "
 echo -n "   Run: "
 ((($STATUS&HAS_CAPPED)!=0)) && echo "${BAD}" || echo "${GOOD}"
 
-echo  "ARM:    Core:    Core Voltage:"
-echo  "${GREEN}${ClockARM}${NC}Mhz ${GREEN}${Clockcore}${NC}MHz ${GREEN}${VoltCore}${NC}"
+cho  "ARM:	Core:	Core Voltage:	Core Temp:"
+echo  "${GREEN}${ClockARM}${NC}Mhz	${GREEN}${Clockcore}${NC}MHz	${GREEN}${VoltCore}${NC}		${GREEN}${TEMP}${NC}"
 
 sleep 1
 done
