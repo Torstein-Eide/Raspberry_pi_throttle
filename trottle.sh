@@ -1,4 +1,6 @@
 #!/bin/bash
+#before first run
+#run chmod +x ./trottled.sh
 while true;
 
 do
