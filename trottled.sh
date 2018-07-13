@@ -2,6 +2,14 @@
 #before first run
 #run chmod +x ./trottled.sh
 
+if hash bc  2>/dev/null; then
+        echo "bc installed"
+    else
+        echo "bc not installed, run 'sudo apt update; sudo apt install bc'"
+        exit
+    fi
+
+
 #Flag Bits
 UNDERVOLTED=0x1
 CAPPED=0x2
@@ -18,8 +26,6 @@ NC=`tput sgr0` #No color
 #Output Strings
 GOOD="${GREEN}NO${NC}"
 BAD="${RED}YES${NC}"
-
-
 
 while true;
 do
@@ -41,7 +47,6 @@ VoltCore=$(vcgencmd measure_volts core)
 VoltCore=${VoltCore#*=}
 
 clear;
-
 
 echo -n "Status: "
 # test, if true do red else grenn
