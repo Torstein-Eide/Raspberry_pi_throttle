@@ -2,10 +2,18 @@
 #before first run
 #run chmod +x ./trottled.sh
 
+#Text Colors
+GREEN=`tput setaf 2`
+RED=`tput setaf 1`
+NC=`tput sgr0` #No color
+if [[ $EUID -ne 0 ]]; then
+  echo -e "${RED}ERROR: You must be a root user${NC}" 2>&1
+  exit 1
+fi
 if hash bc  2>/dev/null; then
         echo "bc installed"
     else
-        echo "bc not installed, run 'sudo apt update; sudo apt install bc'"
+        echo "${RED}ERROR: bc not installed, ${NC}run 'sudo apt update; sudo apt install bc'"
         exit
     fi
 
@@ -18,10 +26,7 @@ HAS_UNDERVOLTED=0x10000
 HAS_CAPPED=0x20000
 HAS_THROTTLED=0x40000
 
-#Text Colors
-GREEN=`tput setaf 2`
-RED=`tput setaf 1`
-NC=`tput sgr0` #No color
+
 
 #Output Strings
 GOOD="${GREEN}NO${NC}"
