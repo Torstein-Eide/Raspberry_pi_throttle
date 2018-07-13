@@ -37,7 +37,7 @@ ClockARM=$(bc <<< "${ClockARM#*=}/1000000")
 Clockcore=$(vcgencmd measure_clock core)
 Clockcore=$(bc <<< "${Clockcore#*=}/1000000")
 
-VoltCore=$(vcgencmd measure_voltage core)
+VoltCore=$(vcgencmd measure_volts core)
 VoltCore=${VoltCore#*=}
 
 clear;
@@ -65,8 +65,8 @@ echo -n "   Now: "
 echo -n "   Run: "
 ((($STATUS&HAS_CAPPED)!=0)) && echo "${BAD}" || echo "${GOOD}"
 
-cho  "ARM:	Core:	Core Voltage:	Core Temp:"
+echo  "ARM:	Core:	Core Voltage:	Core Temp:"
 echo  "${GREEN}${ClockARM}${NC}Mhz	${GREEN}${Clockcore}${NC}MHz	${GREEN}${VoltCore}${NC}		${GREEN}${TEMP}${NC}"
 
-sleep 1
+sleep 1 
 done
