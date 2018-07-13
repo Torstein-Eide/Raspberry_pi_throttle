@@ -1,8 +1,7 @@
 #!/bin/bash
-while true;
+#before first run
+#run chmod +x ./trottled.sh
 
-do
-clear;
 #Flag Bits
 UNDERVOLTED=0x1
 CAPPED=0x2
@@ -14,18 +13,40 @@ HAS_THROTTLED=0x40000
 #Text Colors
 GREEN=`tput setaf 2`
 RED=`tput setaf 1`
-NC=`tput sgr0`
+NC=`tput sgr0` #No color
 
 #Output Strings
 GOOD="${GREEN}NO${NC}"
 BAD="${RED}YES${NC}"
 
+
+
+while true;
+do
+
 #Get Status, extract hex
 STATUS=$(vcgencmd get_throttled)
 STATUS=${STATUS#*=}
-TEMP=$
+TEMP=$vcgencmd measure_temp
+
+
+for src in arm core h264 isp v3d uart pwm emmc pixel vec hdmi dpi ;
+do 
+echo -e "$src:\t$(vcgencmd measure_clock $src)" ;
+done
+
+for id in core sdram_c sdram_i sdram_p ; do \
+echo -e "$id:\t$(vcgencmd measure_volts $id)" ; \
+done
+
+
+
+
+clear;
+
 
 echo -n "Status: "
+# test, if true do red else grenn
 (($STATUS!=0)) && echo "${RED}${STATUS}${NC}" || echo "${GREEN}${STATUS}${NC}"
 
 echo "Undervolted:"
@@ -46,16 +67,6 @@ echo -n "   Now: "
 echo -n "   Run: "
 ((($STATUS&HAS_CAPPED)!=0)) && echo "${BAD}" || echo "${GOOD}"
 
-for src in arm core h264 isp v3d uart pwm emmc pixel vec hdmi dpi ;
-do 
-echo -e "$src:\t$(vcgencmd measure_clock $src)" ;
-done
-
-for id in core sdram_c sdram_i sdram_p ; do \
-echo -e "$id:\t$(vcgencmd measure_volts $id)" ; \
-done
-
-vcgencmd measure_temp
 
 sleep 5
 done
