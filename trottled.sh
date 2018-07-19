@@ -1,6 +1,10 @@
 #!/bin/bash
 #before first run
 #run chmod +x ./trottled.sh
+if [ "$(whoami)" != "root" ]; then
+        echo "Script must be run as user: root"
+        exit -1
+fi
 
 #Text Colors
 GREEN=`tput setaf 2`
