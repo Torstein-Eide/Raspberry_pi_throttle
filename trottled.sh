@@ -51,9 +51,9 @@ function check_vcg {
 # test, if true do red else grenn
 clear;
 echo -n "Status: "
-(($STATUS!=0)) && echo "${RED}${STATUS}${NC} ($GOVENER)" || echo "${GREEN}${STATUS}, no throttling or capping ${NC}"
+(($STATUS!=0)) && echo "${RED}${STATUS}${NC} ($GOVENER)" || echo "${GREEN}${STATUS}, no throttling or capping ${NC} ($GOVENER) "
 
-if [ $STATUS!=0 ];
+if (($STATUS!=0));
 	then
 		echo "Status: "
     echo -n "Undervolted (<=4.63V): "

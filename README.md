@@ -9,8 +9,8 @@ Undervolted (<=4.63V): OK
   Freq Capped (>=80c): OK
     Throttled (>=85c): OK
     Throttled (>=60c): Previously
-ARM:	Core:	Core Voltage:	Core Temp:
-600Mhz	250MHz	1.2000V		55.3'C
+ARM:    Core:   Core Voltage: Core Temp:
+600Mhz  250MHz  1.2000V       55.3'C
 ```
 
 
@@ -26,6 +26,9 @@ sudo chmod +x trottled.sh
 To run continuously use `sudo trottled.sh -c`
 
 To run once use `sudo trottled.sh -o`
+
+## Definition
+
 
 ## supported OS
 
