@@ -18,7 +18,7 @@ ARM:	Core:	Core Voltage:	Core Temp:
 ```shell
 cd /bin/
 sudo wget  https://raw.githubusercontent.com/Eideen/Raspberry_pi_throttle/master/trottled.sh
-chmod +x trottled.sh
+sudo chmod +x trottled.sh
 ```
 
 ## Run
