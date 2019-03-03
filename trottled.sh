@@ -17,18 +17,21 @@ HAS_CAPPED=0x20000
 HAS_THROTTLED=0x40000
 SOFT_TEMP_LIMIT=0x8
 HAS_SOFT_TEMP_LIMIT=0x80000
+#Text Colors
+YELLOW=`tput setaf 3`
+GREEN=`tput setaf 2`
+RED=`tput setaf 1`
+NC=`tput sgr0` #No color
+
+#Output Strings
+GOOD="${GREEN}NO${NC}"
+BAD="${RED}YES${NC}"
+OK="${GREEN}OK${NC}"
+PREVIOUSLY="${YELLOW}Previously${NC}"
 
 function check_vcg {
-  #Text Colors
-  GREEN=`tput setaf 2`
-  RED=`tput setaf 1`
-  NC=`tput sgr0` #No color
 
-  #Output Strings
-  GOOD="${GREEN}NO${NC}"
-  BAD="${RED}YES${NC}"
-  OK="${GREEN}OK${NC}"
-  PREVIOUSLY="${RED}Previously${NC}"
+  GOVENER=$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor)
   #Get Status, extract hex
   STATUS=$(vcgencmd get_throttled)
   STATUS=${STATUS#*=}
@@ -44,64 +47,61 @@ function check_vcg {
 
   VoltCore=$(vcgencmd measure_volts core)
   VoltCore=${VoltCore#*=}
+
 # test, if true do red else grenn
 clear;
 echo -n "Status: "
-(($STATUS!=0)) && echo "${RED}${STATUS}${NC}" || echo "${GREEN}${STATUS}, no throttling or capping ${NC}"
+(($STATUS!=0)) && echo "${RED}${STATUS}${NC} ($GOVENER)" || echo "${GREEN}${STATUS}, no throttling or capping ${NC}"
 
 if [ $STATUS!=0 ];
 	then
 		echo "Status: "
-
-	if ((($STATUS&HAS_UNDERVOLTED)!=0));	then
-			echo "Undervolted:"
-			echo -n "   Now: "
-			((($STATUS&UNDERVOLTED)!=0)) && echo "${BAD}" || echo "${GOOD}"
-			echo -n "   Run: "
-			((($STATUS&HAS_UNDERVOLTED)!=0)) && echo "${BAD}" || echo "${GOOD}"
-		else
-			echo "      Undervolted: ${OK}"
+    echo -n "Undervolted (<=4.63V): "
+	if ((($STATUS&UNDERVOLTED)!=0));	then
+    echo "${BAD}"
+  elif ((($STATUS&HAS_UNDERVOLTED)!=0)); then
+    echo "${PREVIOUSLY}"
+  else
+    echo "${OK}"
 	fi
 
-	if 	((( $STATUS&HAS_THROTTLED)!=0)); then
-			echo "Throttled (>=85c):"
-			echo -n "   Now: "
-			((( $STATUS&THROTTLED)!=0)) && echo "${BAD}" || echo "${GOOD}"
-			echo -n "   Run: "
-			((( $STATUS&HAS_THROTTLED)!=0)) && echo "${BAD}" || echo "${GOOD}"
-		else
-			echo "Throttled (>=85c): ${OK}"
-	fi
+  echo -n "  Freq Capped (>=80c): "
 
-	if ((( $STATUS&HAS_CAPPED)!=0));	then
-		echo "Frequency Capped:"
-		echo -n "   Now: "
-		((($STATUS&CAPPED)!=0)) && echo "${BAD}" || echo "${GOOD}"
-		echo -n "   Run: "
-		((($STATUS&HAS_CAPPED)!=0)) && echo "${BAD}" || echo "${GOOD}"
+	if ((( $STATUS&CAPPED)!=0));	then
+    echo  "${BAD}"
+  elif 	((($STATUS&HAS_CAPPED)!=0)); then
+    echo "${PREVIOUSLY}"
 	else
-			echo "      Freq Capped: ${OK}"
+			echo "${OK}"
 	fi
+  echo -n "    Throttled (>=85c): "
 
-	if ((( $STATUS & HAS_SOFT_TEMP_LIMIT)!=0)); then
-			echo "Throttled (>=60c):"
-		echo -n "   Now: "
-		((( $STATUS & SOFT_TEMP_LIMIT)!=0)) && echo "${BAD}" || echo "${GOOD}"
-		echo -n "   Run: "
-		((( $STATUS & HAS_SOFT_TEMP_LIMIT)!=0)) && echo "${BAD}" || echo "${GOOD}"
+  if 	((( $STATUS&THROTTLED)!=0)); then
+    echo  "${BAD}"
+  elif ((( $STATUS &  HAS_THROTTLED)!=0)); then
+    echo "${PREVIOUSLY}"
 	else
-			echo "Throttled (>=60c):	${OK}"
+		echo "${OK}"
+	fi
+  echo -n "    Throttled (>=60c): "
+
+	if ((( $STATUS & SOFT_TEMP_LIMIT)!=0)); then
+    echo "${BAD}"
+  elif ((( $STATUS & HAS_SOFT_TEMP_LIMIT)!=0)); then
+    echo "${PREVIOUSLY}"
+	else
+    echo "${OK}"
 	fi
 
 fi
-
+#echo
 echo  "ARM:	Core:	Core Voltage:	Core Temp:"
 echo  "${GREEN}${ClockARM}${NC}Mhz	${GREEN}${Clockcore}${NC}MHz	${GREEN}${VoltCore}${NC}		${GREEN}${TEMP}${NC}"
 
 }
 
 if [[ $EUID -ne 0 ]]; then
-  echo -e "${RED}ERROR: You must be a root user${NC}" 2>&1
+  echo -e "${RED}ERROR: You must run progam as root user${NC}" 2>&1
   exit 1
 fi
 
