@@ -37,7 +37,7 @@ To run once use `sudo trottled.sh -o`
 ## Add to MOTD
 If you like to show the status at loggin, you can use the following command:
 ```shell
-sudo echo "trottled.sh -o" | tee /etc/update-motd.d/30-trottled
+sudo echo "trottled.sh -o" | sudo tee /etc/update-motd.d/30-trottled
 ```
 
 It is importen that the scipt only run once, or you will be unable to login.
