@@ -2,7 +2,8 @@
 A small program to display status of the raspberry pi, cpu controll.
 
 ## Eksample output
-```
+user friendly
+```shell
 Status: 0x80000 (conservative)
 Status:
 Undervolted (<=4.63V): OK
@@ -11,6 +12,13 @@ Undervolted (<=4.63V): OK
     Throttled (>=60c): Previously
 ARM:    Core:   Core Voltage: Core Temp:
 600Mhz  250MHz  1.2000V       55.3'C
+```
+
+CSV ouput
+```shell
+0;2019-08-11 00:00:44;600;250;1.2000;54.8;0;0
+1;2019-08-11 00:00:45;600;250;1.2000;54.8;0;0
+2;2019-08-11 00:00:46;600;250;1.2000;53.7;0;0
 ```
 
 
@@ -26,6 +34,32 @@ sudo chmod +x trottled.sh
 To run continuously use `sudo trottled.sh -c`
 
 To run once use `sudo trottled.sh -o`
+
+To run with as logging output use `sudo trottled.sh -l`
+
+```shell
+Usage: trottled.sh [-c/-1/-l/-h]
+Example: 'trottled.sh -c'
+
+Options:
+modes:
+  -c, --continuously		Loops the cheack every secound. (for monitoring)
+  -1, --run-once        Only run once. (for MOTD)
+  -l, --logging         Semi-colom list output (for logging)
+  -h, --help            Display this help
+Options:
+  -i                    Intevall in seconds. use \".\". Default is 1s, minimum is 0.2s.
+
+  CSV output coloms:
+  -1 Counter
+  -2 Date/time
+  -3 ARM core clock
+  -4 Core clock
+  -5 Core Voltage
+  -6 Core temp
+  -7 Throttling (0=no throttling, 1=SOFT_TEMP_LIMIT, 2=capping, 3=throttling)
+  Previously is not printet in CSV mode.
+```
 
 ## Definition
 
