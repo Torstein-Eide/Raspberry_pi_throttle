@@ -48,7 +48,7 @@ modes:
   -l, --logging         Semi-colom list output (for logging)
   -h, --help            Display this help
 Options:
-  -i                    Intevall in seconds. use \".\". Default is 1s, minimum is 0.2s.
+  -i                    Intevall in seconds. use ".". Default is 1s, minimum is 0.2s.
 
   CSV output coloms:
   -1 Counter
