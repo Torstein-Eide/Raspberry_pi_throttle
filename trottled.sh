@@ -20,7 +20,8 @@ Options:\n
   -4 Core clock\n
   -5 Core Voltage\n
   -6 Core temp \n
-  -7 Throttling (0=no throttling, 1=SOFT_TEMP_LIMIT, 2=capping, 3=throttling)\n
+  -7 Throttling (0=no throttling, 1=soft_temp_limit(>=60c), 2=capping(>=80c), 3=throttling(>=85c) )\n
+  -8 Undervolting (0=no Undervolting, 1=Undervolting) \n
   Previously is not printet in CSV mode.
 "
 
@@ -126,11 +127,15 @@ function CSV {
   # function for CSV output
   check_vcg
   dt=$(date +%Y-%m-%d\ %T${DT_format})
+
+  ## Undervolting
   if ((($STATUS&UNDERVOLTED)!=0));	then
     UNDERVOLTED_true=1
   else
     UNDERVOLTED_true=0
   fi
+
+  ## Throttling
   if ((( $STATUS & SOFT_TEMP_LIMIT)!=0)); then
     THROTTLED_true=1
   elif ((( $STATUS&CAPPED)!=0));	then
@@ -181,7 +186,7 @@ fi
 
 
 
-
+# change for intervall parameter.
 if [[ $intervall < 0.2 ]]; then
   echo "intervall is to low, script is not optimisted for intervall below 0.2s"
   exit 14
@@ -190,6 +195,7 @@ elif [[ $intervall < 1 ]]; then
 else
   DT_format=''
 fi
+
 c=0
 if [[ $@ == *'-h'* ]] || [[ $@ == *'--help'* ]]; then
   echo -e  $help
@@ -202,6 +208,9 @@ elif [[ $@ == *'-c'* ]] || [[ $@ == *'--continuously'* ]]; then
       wait
 	done
 elif [[ $@ == *'-l'* ]] || [[ $@ == *'--logging'* ]]; then
+   #$c;$dt;${ClockARM};${Clockcore};${VoltCore};${TEMP};${THROTTLED_true};${UNDERVOLTED_true}
+  echo "ID;date;ClockARM;Clockcore;VoltCore;TEMP;Throttled_status;Undervolted_status"
+
   while true; do
       sleep $intervall &
       CSV
