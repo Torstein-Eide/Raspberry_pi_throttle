@@ -1,7 +1,8 @@
-#!/bin/bash
+#/usr/bin/python
 #before first run
-#run chmod +x ./trottled.sh
-help="Usage: trottled.sh [-c/-o/-l/-O]\n
+#run chmod +x ./trottled.py
+
+help = "Usage: trottled.sh [-c/-o/-l/-O]\n
 Example: 'trottled.sh -c'\n
 \n
 Options:\n
@@ -80,10 +81,7 @@ echo -n "Status: "
 if (($STATUS!=0));
 	then
 		echo "Status: "
-    echo "$STATUS&UNDERVOLTED"
-    echo "$STATUS&HAS_UNDERVOLTED"
     echo -n "Undervolted (<=4.63V): "
-
 	if ((($STATUS&UNDERVOLTED)!=0));	then
     echo "${BAD}"
   elif ((($STATUS&HAS_UNDERVOLTED)!=0)); then
@@ -94,16 +92,16 @@ if (($STATUS!=0));
 
   echo -n "  Freq Capped (>=80c): "
 
-	if ((( $STATUS & CAPPED)!=0));	then
+	if ((( $STATUS&CAPPED)!=0));	then
     echo  "${BAD}"
-  elif 	((($STATUS & HAS_CAPPED)!=0)); then
+  elif 	((($STATUS&HAS_CAPPED)!=0)); then
     echo "${PREVIOUSLY}"
 	else
 			echo "${OK}"
 	fi
   echo -n "    Throttled (>=85c): "
 
-  if 	((( $STATUS & THROTTLED)!=0)); then
+  if 	((( $STATUS&THROTTLED)!=0)); then
     echo  "${BAD}"
   elif ((( $STATUS &  HAS_THROTTLED)!=0)); then
     echo "${PREVIOUSLY}"
