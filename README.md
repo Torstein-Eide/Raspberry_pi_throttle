@@ -1,9 +1,9 @@
 # Raspberry pi throttle
-A small program to display status of the raspberry pi, cpu controll.
+A small program to display status of the raspberry pi an CPU governor.
 
-## Eksample output
+## Example output
 user friendly
-```shell
+```bash
 Status: 0x80000 (conservative)
 Status:
 Undervolted (<=4.63V): OK
@@ -14,8 +14,10 @@ ARM:    Core:   Core Voltage: Core Temp:
 600Mhz  250MHz  1.2000V       55.3'C
 ```
 
+
 CSV ouput
-```shell
+```bash
+ID;date;ClockARM;Clockcore;VoltCore;TEMP;Throttled_status;Undervolted_status
 0;2019-08-11 00:00:44;600;250;1.2000;54.8;0;0
 1;2019-08-11 00:00:45;600;250;1.2000;54.8;0;0
 2;2019-08-11 00:00:46;600;250;1.2000;53.7;0;0
@@ -33,7 +35,7 @@ sudo chmod +x trottled.sh
 
 To run continuously use `sudo trottled.sh -c`
 
-To run once use `sudo trottled.sh -o`
+To run once use `sudo trottled.sh -1`
 
 To run with as logging output use `sudo trottled.sh -l`
 
@@ -57,7 +59,14 @@ Options:
   -4 Core clock
   -5 Core Voltage
   -6 Core temp
-  -7 Throttling (0=no throttling, 1=SOFT_TEMP_LIMIT, 2=capping, 3=throttling)
+  -7 Throttling (
+    0=no throttling,
+    1=soft_temp_limit(>=60c),
+    2=capping(>=80c),
+    3=throttling(>=85c))
+  -8 Undervolting (
+    0=no Undervolting,
+    1=Undervolting)
   Previously is not printet in CSV mode.
 ```
 
@@ -71,7 +80,7 @@ Options:
 ## Add to MOTD
 If you like to show the status at loggin, you can use the following command:
 ```shell
-sudo echo "trottled.sh -o" | sudo tee /etc/update-motd.d/30-trottled && sudo chmod +x /etc/update-motd.d/30-trottled
+sudo echo "trottled.sh -1" | sudo tee /etc/update-motd.d/30-trottled && sudo chmod +x /etc/update-motd.d/30-trottled
 ```
 
 It is importen that the scipt only run once, or you will be unable to login.
