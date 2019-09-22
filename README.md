@@ -80,7 +80,10 @@ Options:
 ## Add to MOTD
 If you like to show the status at loggin, you can use the following command:
 ```shell
-sudo echo "trottled.sh -1" | sudo tee /etc/update-motd.d/30-trottled && sudo chmod +x /etc/update-motd.d/30-trottled
+sudo echo -e '#!/bin/sh
+echo
+trottled.sh -1
+echo' | sudo tee /etc/update-motd.d/30-trottled && sudo chmod +x /etc/update-motd.d/30-trottled
 ```
 
 It is importen that the scipt only run once, or you will be unable to login.
