@@ -26,9 +26,18 @@ ID;date;ClockARM;Clockcore;VoltCore;TEMP;Throttled_status;Undervolted_status
 
 ## download
 ```shell
-cd /bin/
+cd /usr/bin/
 sudo wget  https://raw.githubusercontent.com/Eideen/Raspberry_pi_throttle/master/trottled.sh
 sudo chmod +x trottled.sh
+```
+## Run without password promt
+### manuall
+```shell
+echo "%users ALL=(ALL) NOPASSWD: /usr/bin/trottled.sh" |  tee /etc/sudoers.d/RASP-trottled
+```
+### Via script
+```shell
+trottled.sh --install
 ```
 
 ## Run
@@ -50,7 +59,7 @@ modes:
   -l, --logging         Semi-colom list output (for logging)
   -h, --help            Display this help
 Options:
-  -i                    Intevall in seconds. use ".". Default is 1s, minimum is 0.2s.
+  -i, --intervall                  Intevall in seconds. use ".". Default is 1s, minimum is 0.2s.
 
   CSV output coloms:
   -1 Counter
