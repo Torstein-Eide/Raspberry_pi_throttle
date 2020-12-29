@@ -31,6 +31,8 @@ sudo wget  https://raw.githubusercontent.com/Eideen/Raspberry_pi_throttle/master
 sudo chmod +x trottled.sh
 ```
 ## Run without password promt
+
+The following commands, expect that the user running the script is part of the `users`group, run `groups` to list your current groups.
 ### manuall
 ```shell
 echo "%users ALL=(ALL) NOPASSWD: /usr/bin/trottled.sh" |  tee /etc/sudoers.d/RASP-trottled
