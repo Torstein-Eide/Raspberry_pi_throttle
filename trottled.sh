@@ -155,7 +155,9 @@ function CSV {
 
 
 
-
+function mode-test {
+  if  [[ -n $mode ]]; then echo "multiple modes selected. Make up your mind! please try again" ; exit 11; fi
+}
 
 # change for intervall parameter.
 
@@ -190,13 +192,13 @@ do
         "--help"| "-h")
            echo -e  $help ; exit;;
         '-c' | '--continuously')
-           if  [[ -n $mode ]]; then echo "multiple modes selected. Make up your mind! please try again" ; exit 11; fi
-           mode="continuously";  shift;;
+          mode-test
+          mode="continuously";  shift;;
         '-1' | '--single' | '--run-once')
-           if  [[ -n $mode ]]; then echo "multiple modes selected. Make up your mind! please try again" ; exit 11; fi
+           mode-test
            mode="single";  shift;;
         '-l' | '--logging')
-           if  [[ -n $mode ]]; then echo "multiple modes selected. Make up your mind! please try again" ; exit 11; fi
+           mode-test
            mode="logg";  shift;;
          -i | --intervall )  intervall="$2";
          # test if number is valid
