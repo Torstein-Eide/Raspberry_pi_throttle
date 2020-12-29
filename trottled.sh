@@ -212,6 +212,10 @@ do
 						 DT_format=''
 						fi
 						shift 2 ;;
+			 "--install" )
+			 echo -e "making it possible to run as normal user, without passord\n editing /etc/sudoers.d/RASP-trottled"
+			 echo "%users ALL=(ALL) NOPASSWD: /usr/bin/trottled.sh" |  tee /etc/sudoers.d/RASP-trottled
+			 exit ;;
         *) echo >&2 "Invalid option: $opt"; exit 11;;
    esac
 done
