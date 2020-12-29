@@ -1,6 +1,7 @@
 #!/bin/bash
 #before first run
 #run chmod +x ./trottled.sh
+####################### HELP ###############
 help="Usage: trottled.sh [-c/-o/-l/-O]\n
 Example: 'trottled.sh -c'\n
 \n
@@ -11,7 +12,7 @@ modes:\n
   -l, --logging         Semi-colom list output (for logging)\n
   -h, --help            Display this help\n
 Options:\n
-  -i                    Intevall in seconds. use \".\". Default is 1s, minimum is 0.2s.\n
+  -i --intervall                    Intevall in seconds. use \".\". Default is 1s, minimum is 0.2s.\n
 \n
   CSV output coloms:\n
   -1 Counter\n
@@ -24,6 +25,7 @@ Options:\n
   -8 Undervolting (0=no Undervolting, 1=Undervolting) \n
   Previously is not printet in CSV mode.
 "
+####################### HELP ###############
 
 #Flag Bits
 UNDERVOLTED=0x1
@@ -151,63 +153,79 @@ function CSV {
   echo  "$c;$dt;${ClockARM};${Clockcore};${VoltCore};${TEMP};${THROTTLED_true};${UNDERVOLTED_true}"
 }
 
+
+
+
+
+# change for intervall parameter.
+
+        c=0
+intervall=1
+
+# test if root
 if [[ $EUID -ne 0 ]]; then
   echo -e "${RED}ERROR: You must run progam as root user${NC}" 2>&1
   exit 10
 fi
 
-# function findnextIndex  {
-#   my_array=($1)
-#   value=$2
-#   for i in "${!my_array[@]}" ; do
-#     if [[ "${my_array[$i]}" = "${value}" ]]; then
-#       o=$(($i + 1))
-#       o=${my_array[$intervall]}
-#       echo $o
-#     fi
-#   done
-if [[ $@ == *'-i'* ]]; then
-  #get posision of "-i", and add +1
-  my_array=($@)
-  value='-i'
-  for i in "${!my_array[@]}" ; do
-    if [[ "${my_array[$i]}" = "${value}" ]]; then
-      intervall=$(($i + 1))
-      intervall=${my_array[$intervall]}
-    fi
-  done
-  re='^[0-9]+(\.\d+)?'
-  if ! [[ $intervall =~ $re ]] ; then
-    echo "-i $intervall is not a number" && exit 12
-  fi
-else
-  intervall=1
+if  [ -z "$*" ]; then
+  echo -e "You forgot argruments!\n printing help"
+  echo -e $help
+	exit 11
 fi
+echo -e "\nNumber of Args in SetArgs: $#" ## debug
+echo "SetArgs Args: $@" ## debug
+
+TEMP=`getopt -o hcl1i: --long install,help,continuously,logging,run-once,single,intervall:outputfile: \
+             -n 'javawrap' -- "$@"`
+
+eval set -- "$TEMP"
+
+while  [[ $# -gt 0 ||  "$1" == "--"*  ]] ;
+do
+    opt="$1";
+    echo "opt = $opt"
+    case "$opt" in
+        "--")  break;;
+        "--help"| "-h")
+           echo -e  $help ; exit;;
+        '-c' | '--continuously')
+           if  [[ -n $mode ]]; then echo "multiple modes selected. Make up your mind! please try again" ; exit 11; fi
+           mode="continuously";  shift;;
+        '-1' | '--single' | '--run-once')
+           if  [[ -n $mode ]]; then echo "multiple modes selected. Make up your mind! please try again" ; exit 11; fi
+           mode="single";  shift;;
+        '-l' | '--logging')
+           if  [[ -n $mode ]]; then echo "multiple modes selected. Make up your mind! please try again" ; exit 11; fi
+           mode="logg";  shift;;
+         -i | --intervall )  intervall="$2";
+         # test if number is valid
+						re='^[0-9]+(\.\d+)?'
+						if ! [[ $intervall =~ $re ]] ; then
+						 echo "-i $intervall is not a number" && exit 11
+						elif [[ $intervall < 0.2 ]]; then
+						 echo "intervall is to low, script is not optimisted for intervall below 0.2s"
+						 exit 14
+						elif [[ $intervall < 1 ]]; then
+						 DT_format='.%N'
+						else
+						 DT_format=''
+						fi
+						shift 2 ;;
+        *) echo >&2 "Invalid option: $opt"; exit 11;;
+   esac
+done
 
 
-
-# change for intervall parameter.
-if [[ $intervall < 0.2 ]]; then
-  echo "intervall is to low, script is not optimisted for intervall below 0.2s"
-  exit 14
-elif [[ $intervall < 1 ]]; then
-  DT_format='.%N'
-else
-  DT_format=''
-fi
-
-c=0
-if [[ $@ == *'-h'* ]] || [[ $@ == *'--help'* ]]; then
-  echo -e  $help
-	exit
-elif [[ $@ == *'-c'* ]] || [[ $@ == *'--continuously'* ]]; then
+## run in mode
+if [[ $mode = 'continuously' ]]; then
 	while true; do
 			sleep $intervall &
       TUI
       let c=c+1
       wait
 	done
-elif [[ $@ == *'-l'* ]] || [[ $@ == *'--logging'* ]]; then
+elif [[ $mode == 'logg' ]]; then
    #$c;$dt;${ClockARM};${Clockcore};${VoltCore};${TEMP};${THROTTLED_true};${UNDERVOLTED_true}
   echo "ID;date;ClockARM;Clockcore;VoltCore;TEMP;Throttled_status;Undervolted_status"
 
@@ -217,11 +235,10 @@ elif [[ $@ == *'-l'* ]] || [[ $@ == *'--logging'* ]]; then
       let c=c+1
       wait
 	done
-elif [[ $@ == *'-1'* ]] || [[ $@ == *'--run-once'* ]]; then
+elif [[ $mode == 'single' ]]; then
 	TUI
 	exit
 else
-  echo -e "Missing argruments\n printing help"
-  echo -e $help
-	exit 11
+echo "Modes not selected. Make up your mind! Please try again" ; exit 11; fi
+
 fi
