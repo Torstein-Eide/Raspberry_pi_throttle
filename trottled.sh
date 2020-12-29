@@ -175,8 +175,6 @@ if  [ -z "$*" ]; then
   echo -e $help
 	exit 11
 fi
-echo -e "\nNumber of Args in SetArgs: $#" ## debug
-echo "SetArgs Args: $@" ## debug
 
 TEMP=`getopt -o hcl1i: --long install,help,continuously,logging,run-once,single,intervall:outputfile: \
              -n 'javawrap' -- "$@"`
@@ -186,7 +184,6 @@ eval set -- "$TEMP"
 while  [[ $# -gt 0 ||  "$1" == "--"*  ]] ;
 do
     opt="$1";
-    echo "opt = $opt"
     case "$opt" in
         "--")  break;;
         "--help"| "-h")
@@ -204,20 +201,20 @@ do
          # test if number is valid
 						re='^[0-9]+(\.\d+)?'
 						if ! [[ $intervall =~ $re ]] ; then
-						 echo "-i $intervall is not a number" && exit 11
+                     echo "-i $intervall is not a number" && exit 11
 						elif [[ $intervall < 0.2 ]]; then
-						 echo "intervall is to low, script is not optimisted for intervall below 0.2s"
-						 exit 14
+				         echo "intervall is to low, script is not optimisted for intervall below 0.2s"
+						   exit 14
 						elif [[ $intervall < 1 ]]; then
-						 DT_format='.%N'
+						   DT_format='.%N'
 						else
-						 DT_format=''
+						   DT_format=''
 						fi
 						shift 2 ;;
 			 "--install" )
-			 echo -e "making it possible to run as normal user, without passord\n editing /etc/sudoers.d/RASP-trottled"
-			 echo "%users ALL=(ALL) NOPASSWD: /usr/bin/trottled.sh" |  tee /etc/sudoers.d/RASP-trottled
-			 exit ;;
+  			 echo -e "making it possible to run as normal user, without passord\n editing /etc/sudoers.d/RASP-trottled"
+  			 echo "%users ALL=(ALL) NOPASSWD: /usr/bin/trottled.sh" |  tee /etc/sudoers.d/RASP-trottled
+  			 exit ;;
         *) echo >&2 "Invalid option: $opt"; exit 11;;
    esac
 done
