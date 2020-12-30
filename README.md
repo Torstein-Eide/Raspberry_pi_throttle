@@ -26,7 +26,7 @@ ID;date;ClockARM;Clockcore;VoltCore;TEMP;Throttled_status;Undervolted_status
 
 ## download
 ```shell
-sudo wget  https://raw.githubusercontent.com/Eideen/Raspberry_pi_throttle/master/trottled.sh -O /usr/bin/
+sudo wget  https://raw.githubusercontent.com/Eideen/Raspberry_pi_throttle/master/trottled.sh -O /usr/bin/trottled.sh
 sudo chmod +x /usr/bin/trottled.sh
 ```
 ## Run without password promt
