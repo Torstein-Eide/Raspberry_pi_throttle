@@ -85,7 +85,7 @@ Options:
 
 ## supported OS
 
-* Raspbian (32bit only)
+* Raspberry pi OS
 
 ## Add to MOTD
 If you like to show the status at loggin, you can use the following command:
